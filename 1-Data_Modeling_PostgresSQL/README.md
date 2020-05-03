@@ -41,7 +41,7 @@ The ```songplay``` table references the primary keys of each dimention table, en
 java -jar schemaspy.jar -t pgsql -dp C:/sqljdbc4-3.0.jar -db DATABASE -host SERVER -port 5432 -s dbo -u USER -p PASSWORD -o DIRECTORY
 ```
 
-<img src="./schema.PNG?raw=true" width="800"/>
+<img src="./images/schema.PNG?raw=true" width="800"/>
 
 
 ### ETL process
