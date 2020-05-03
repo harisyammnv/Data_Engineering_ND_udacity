@@ -41,7 +41,7 @@ The ```songplay``` table references the primary keys of each dimention table, en
 java -jar schemaspy.jar -t pgsql -dp C:/sqljdbc4-3.0.jar -db DATABASE -host SERVER -port 5432 -s dbo -u USER -p PASSWORD -o DIRECTORY
 ```
 
-![SparkifyDB Schema](schema.PNG)
+![SparkifyDB Schema](./schema.PNG)
 
 
 ### ETL process
