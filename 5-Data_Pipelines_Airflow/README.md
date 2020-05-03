@@ -61,8 +61,7 @@ The ```songplay``` table references the primary keys of each dimention table, en
 java -jar schemaspy.jar -t pgsql -dp C:/sqljdbc4-3.0.jar -db DATABASE -host SERVER -port 5432 -s dbo -u USER -p PASSWORD -o DIRECTORY
 ```
 
-![SparkifyDB Schema](https://github.com/harisyammnv/Data_Engineering_ND_udacity/blob/master/5-Data_Pipelines_Airflow/images/schema.PNG)
-
+![treeview](https://github.com/harisyammnv/Data_Engineering_ND_udacity/blob/master/5-Data_Pipelines_Airflow/images/schema.png)
 
 ### Dataset preview from S3
 
