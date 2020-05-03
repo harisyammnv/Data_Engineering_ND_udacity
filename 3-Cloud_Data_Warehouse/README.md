@@ -84,7 +84,7 @@ The ```songplay``` table references the primary keys of each dimention table, en
 java -jar schemaspy.jar -t pgsql -dp C:/sqljdbc4-3.0.jar -db DATABASE -host SERVER -port 5432 -s dbo -u USER -p PASSWORD -o DIRECTORY
 ```
 
-![SparkifyDB Schema](schema.PNG)
+![SparkifyDB Schema](https://github.com/harisyammnv/Data_Engineering_ND_udacity/blob/master/3-Cloud_Data_Warehouse/schema.png)
 
 
 ## Execution Steps
@@ -235,4 +235,4 @@ Then the following query plan for the cluster is created:
 
 The query plan observed in AWS Redshift console:
 
-![QueryPlan](query_plan.PNG)
+![QueryPlan](https://github.com/harisyammnv/Data_Engineering_ND_udacity/blob/master/3-Cloud_Data_Warehouse/query_plan.png)
