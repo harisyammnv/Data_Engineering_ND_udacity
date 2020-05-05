@@ -35,10 +35,10 @@ stage data to redshift, populate the data warehouse and run data quality checks.
 This ETL DAG shows the ETL pipeline flow from creating the Tables in the AWS Redshift to perfroming data quality checks for 
 each dag run
 
-![graph_view](./images/graph_view.PNG)
+![graph_view](https://github.com/harisyammnv/Data_Engineering_ND_udacity/blob/master/5-Data_Pipelines_Airflow/images/graph_view.PNG)
 
 A few successful dag runs would like the below in the ```Airflow UI```
-![graph_view](./images/treeview.PNG)
+![treeview](https://github.com/harisyammnv/Data_Engineering_ND_udacity/blob/master/5-Data_Pipelines_Airflow/images/treeview.PNG)
 
 ### Database Schema
 
@@ -61,8 +61,7 @@ The ```songplay``` table references the primary keys of each dimention table, en
 java -jar schemaspy.jar -t pgsql -dp C:/sqljdbc4-3.0.jar -db DATABASE -host SERVER -port 5432 -s dbo -u USER -p PASSWORD -o DIRECTORY
 ```
 
-![SparkifyDB Schema](./images/schema.PNG)
-
+![treeview](https://github.com/harisyammnv/Data_Engineering_ND_udacity/blob/master/5-Data_Pipelines_Airflow/images/schema.png)
 
 ### Dataset preview from S3
 
