@@ -13,6 +13,12 @@ AWS_EC2_KEY_PAIR = config.get('AWS', 'AWS_EC2_KEY_PAIR')
 TEMPLATE_URL = config.get('S3', 'CF_TEMPLATE_URL')
 FINAL_DATA_BUCKET = config.get('S3', 'FINAL_DATA_BUCKET')
 RAW_DATA_BUCKET = config.get('S3', 'RAW_DATA_BUCKET')
+VISA_DATA_LOC = config.get('S3', 'VISA_DATA')
+CODES_DATA_LOC = config.get('S3','CODES_DATA')
+SAS_LABELS_DATA_LOC = config.get('S3','SAS_LABELS_DATA')
+I94_RAW_DATA_LOC = config.get('S3','I94_RAW_DATA')
+DEMOGRAPHICS_DATA_LOC = config.get('S3','DEMOGRAPHICS_DATA')
+
 create_stack = False
 upload_files = False
 
@@ -23,22 +29,22 @@ if upload_files:
     sas_data = "./data/18-83510-I94-Data-2016/"
     files = [sas_data + f for f in os.listdir(sas_data)]
     for f in files:
-        s3_client.upload_file(f, RAW_DATA_BUCKET, "/raw/i94_immigration_data/" + f.split("/")[-1])
+        s3_client.upload_file(f, RAW_DATA_BUCKET, I94_RAW_DATA_LOC + f.split("/")[-1])
 
     s3_client.upload_file("data/us-cities-demographics.csv", RAW_DATA_BUCKET,
-                          "raw/us-demographics/us-cities-demographics.csv")
+                          DEMOGRAPHICS_DATA_LOC + "us-cities-demographics.csv")
     s3_client.upload_file("data/nationality-codes.csv", RAW_DATA_BUCKET,
-                          "raw/codes/nationality-codes.csv")
+                          CODES_DATA_LOC + "nationality-codes.csv")
     s3_client.upload_file("data/port-of-entry-codes.csv", RAW_DATA_BUCKET,
-                          "raw/codes/port-of-entry-codes.csv")
+                          CODES_DATA_LOC + "port-of-entry-codes.csv")
     s3_client.upload_file("data/airport-codes.csv", RAW_DATA_BUCKET,
-                          "raw/codes/airport-codes.csv")
+                          CODES_DATA_LOC + "airport-codes.csv")
     s3_client.upload_file("data/visa-issuing-ports.csv", RAW_DATA_BUCKET,
-                          "raw/us-visa/visa-issuing-ports.csv")
+                          VISA_DATA_LOC + "visa-issuing-ports.csv")
     s3_client.upload_file("data/visa-type.csv", RAW_DATA_BUCKET,
-                          "raw/us-visa/visa-type.csv")
+                          VISA_DATA_LOC + "visa-type.csv")
     s3_client.upload_file("data/I94_SAS_Labels_Descriptions.SAS", RAW_DATA_BUCKET,
-                          "raw/sas_meta_data/I94_SAS_Labels_Descriptions.SAS")
+                          SAS_LABELS_DATA_LOC + "I94_SAS_Labels_Descriptions.SAS")
 
 if create_stack:
     aws_stack_provider = AWSCloudFormationStackProvider(aws_key=AWS_ACCESS_KEY, aws_secret=AWS_SECRET,
