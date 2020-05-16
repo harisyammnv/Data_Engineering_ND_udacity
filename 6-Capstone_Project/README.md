@@ -37,14 +37,6 @@ Finally to create the cloud-formation stack use: `python create_resources.py`
 
 
 ##### External Data Sources
-1) US Air Traffic and related meta data => can be combined with U4/U1
-    - [http://stat-computing.org/dataexpo/2009/the-data.html](http://stat-computing.org/dataexpo/2009/the-data.html)
-2) Financial Data Modeling 
-    - [https://financialmodelingprep.com/developer/docs/](https://financialmodelingprep.com/developer/docs/)
-    - [https://www.kaggle.com/borismarjanovic/price-volume-data-for-all-us-stocks-etfs](https://www.kaggle.com/borismarjanovic/price-volume-data-for-all-us-stocks-etfs)
-3) Bike Share Data 
-    - [https://www.kaggle.com/jackywang529/toronto-bikeshare-data](https://www.kaggle.com/jackywang529/toronto-bikeshare-data)
-    - [https://www.lyft.com/bikes/bay-wheels/system-data](https://www.lyft.com/bikes/bay-wheels/system-data)
-    - [https://github.com/BetaNYC/Bike-Share-Data-Best-Practices/wiki/Bike-Share-Data-Systems](https://github.com/BetaNYC/Bike-Share-Data-Best-Practices/wiki/Bike-Share-Data-Systems)
-4) US Accidents Data => can be combined with U3
-    - [https://www.kaggle.com/sobhanmoosavi/us-accidents](https://www.kaggle.com/sobhanmoosavi/us-accidents)
+1) [Port Codes; Nationality Codes And Port of Entry codes](https://fam.state.gov/fam/09FAM/09FAM010205.html)
+2) [US Non-immigrant Visa Types](https://www.dhs.gov/immigration-statistics/nonimmigrant/NonimmigrantCOA)
+3) [US Immigrant Visa Types](https://en.m.wikipedia.org/wiki/Visa_policy_of_the_United_States#Classes_of_visas)
