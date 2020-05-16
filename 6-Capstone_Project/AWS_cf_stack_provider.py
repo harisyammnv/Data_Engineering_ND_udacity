@@ -57,7 +57,7 @@ class AWSCloudFormationStackProvider:
             'Capabilities':['CAPABILITY_NAMED_IAM']
         }
         try:
-            if self._stack_exists(stack_name):
+            if self.stack_exists(stack_name):
                 print('Updating {}'.format(stack_name))
                 stack_result = self.cf.update_stack(**params)
                 waiter = self.cf.get_waiter('stack_update_complete')
@@ -75,7 +75,7 @@ class AWSCloudFormationStackProvider:
             else:
                 raise
 
-    def _stack_exists(self,stack_name):
+    def stack_exists(self,stack_name):
         stacks = self.cf.list_stacks()['StackSummaries']
         for stack in stacks:
             if stack['StackStatus'] == 'DELETE_COMPLETE':
@@ -85,6 +85,7 @@ class AWSCloudFormationStackProvider:
         return False
 
 
+'''
 if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read('./dwh.cfg')
@@ -103,3 +104,5 @@ if __name__ == '__main__':
     valid_stack_template = aws_stack_provider.get_stack_template()
     if valid_stack_template:
         aws_stack_provider.create_stack(stack_name='Test-STACK')
+
+'''
