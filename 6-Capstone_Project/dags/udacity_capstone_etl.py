@@ -7,9 +7,11 @@ import configparser
 import re
 import pandas as pd
 from plugins.helpers import aws_connections
+from dags.lib.emr_cluster_provider import *
 # airflow
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.models import Variable
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.python_operator import PythonOperator
 
@@ -17,6 +19,7 @@ config = configparser.ConfigParser()
 config.read('./plugins/helpers/dwh_airflow.cfg')
 
 aws_connect = aws_connections.get_aws_access_id(aws_connections.AirflowConnectionIds.S3)
+
 
 PARAMS = {'aws_access_key': aws_connect.get('aws_access_key'),
           'aws_secret': aws_connect.get('aws_secret'),
@@ -26,7 +29,9 @@ PARAMS = {'aws_access_key': aws_connect.get('aws_access_key'),
           'CODES_DATA_LOC' : config.get('S3','CODES_DATA'),
           'SAS_LABELS_DATA_LOC' : config.get('S3','SAS_LABELS_DATA'),
           'I94_RAW_DATA_LOC' : config.get('S3','I94_RAW_DATA'),
-          'DEMOGRAPHICS_DATA_LOC' : config.get('S3','DEMOGRAPHICS_DATA')
+          'DEMOGRAPHICS_DATA_LOC' : config.get('S3','DEMOGRAPHICS_DATA'),
+          'REGION': config.get('AWS','REGION'),
+          'EC2_KEY_PAIR': config.get('AWS','AWS_EC2_KEY_PAIR')
           }
 
 
@@ -78,3 +83,75 @@ def sas_labels_to_csv(*args, **kwargs):
         with s3.open(f"{PARAMS['FINAL_DATA_BUCKET']}/i94_meta_data/{key}.csv", "w") as f:
             df_dict[key].to_csv(f, index=False)
 
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2016, 1, 1),
+    'retries': 0,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'provide_context': True
+}
+
+dag = DAG('Udacity_Capstone',
+          default_args=default_args,
+          description='Load and transform data in Redshift with Airflow',
+          schedule_interval=None,
+          max_active_runs=1
+        )
+
+start_operator = DummyOperator(task_id='Begin_ETL',  dag=dag)
+finish_operator = DummyOperator(task_id='End_ETL',  dag=dag)
+
+# create boto3 emr client
+emr_cp = EMRClusterProvider(aws_key=PARAMS['aws_access_key'], aws_secret=PARAMS['aws_secret'],
+                            region=PARAMS['REGION'], key_pair=PARAMS['EC2_KEY_PAIR'], num_nodes=3)
+emr = emr_cp.create_client()
+
+
+def create_emr_cluster(**kwargs):
+    cluster_id = emr_cp.create_cluster(cluster_name='Udac-Airflow')
+    Variable.set("cluster_id",cluster_id)
+    return cluster_id
+
+
+def wait_for_emr_completion(**kwargs):
+    ti = kwargs['ti']
+    cluster_id = ti.xcom_pull(task_ids='create_emr_cluster')
+    emr_cp.wait_for_cluster_creation(cluster_id=cluster_id)
+
+
+def terminate_emr_cluster(**kwargs):
+    ti = kwargs['ti']
+    cluster_id = ti.xcom_pull(task_ids='create_emr_cluster')
+    emr_cp.terminate_cluster(cluster_id=cluster_id)
+    Variable.set("cluster_id", "na")
+
+
+create_cluster = PythonOperator(
+    task_id='create_emr_cluster',
+    python_callable=create_emr_cluster,
+    dag=dag)
+
+wait_for_cluster_completion = PythonOperator(
+    task_id='wait_for_emr_cluster_completion',
+    python_callable=wait_for_emr_completion,
+    dag=dag)
+
+terminate_cluster = PythonOperator(
+    task_id='terminate_emr_cluster',
+    python_callable=terminate_emr_cluster,
+    trigger_rule='all_done',
+    dag=dag)
+
+task_write_sas_codes_to_s3 = PythonOperator(
+    task_id='write_sas_labels_to_s3',
+    python_callable=sas_labels_to_csv,
+    dag=dag
+)
+
+start_operator >> [task_write_sas_codes_to_s3, create_cluster]
+create_cluster >> wait_for_cluster_completion
+wait_for_cluster_completion >> terminate_cluster
+terminate_cluster >> finish_operator
